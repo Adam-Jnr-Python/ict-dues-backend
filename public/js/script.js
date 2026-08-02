@@ -1,4 +1,4 @@
-const API_BASE = "https://maisa-dues.onrender.com";
+const API_BASE = "https://ict-dues-backend.onrender.com";
 
 // MODAL ALERT SYSTEM
 function showModalAlert(message, type = "info", title = "", callback = null) {
@@ -164,6 +164,53 @@ document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   } catch (error) {
     console.error("Registration error:", error);
     showModalAlert("Failed to connect to server. Please try again.", "error");
+  }
+});
+
+// AUTO-DETECT:
+// For login page
+if (window.location.pathname.includes("login.html")) {
+  const email = urlParams.get("email");
+  const password = urlParams.get("password");
+
+  if (email && password) {
+    // Auto-fill and submit
+    const form = document.getElementById("loginForm");
+    if (form) {
+      document.querySelector('input[name="email"]').value =
+        decodeURIComponent(email);
+      document.querySelector('input[name="password"]').value = password;
+
+      setTimeout(() => {
+        form.dispatchEvent(new Event("submit"));
+      }, 500);
+    }
+  }
+}
+//  Check if user came from signup with query params
+document.addEventListener("DOMContentLoaded", function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const name = urlParams.get("name");
+  const email = urlParams.get("email");
+  const password = urlParams.get("password");
+
+  // If on signup page with params, auto-submit
+  if (
+    window.location.pathname.includes("signup.html") &&
+    name &&
+    email &&
+    password
+  ) {
+    const form = document.getElementById("signupForm");
+    if (form) {
+      document.querySelector('input[name="name"]').value = name;
+      document.querySelector('input[name="email"]').value = email;
+      document.querySelector('input[name="password"]').value = password;
+
+      setTimeout(() => {
+        form.dispatchEvent(new Event("submit"));
+      }, 500);
+    }
   }
 });
 
