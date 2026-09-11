@@ -9,36 +9,44 @@
   </head>
   <body>
     <div class="container">
+      <!-- MOBILE HAMBURGER -->
+      <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- SIDEBAR OVERLAY (mobile) -->
+      <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
       <!-- SIDEBAR -->
-      <div class="sidebar">
-        <div class="sidebar-head">
-          <!-- <h2 id="deptName" class="dept-name">MaISA</h2>
-          <img
-            src="./images/maisa-icon.jpg"
-            alt="MaISA logo"
-            class="maisa-logo" /> -->
+      <div class="sidebar" id="sidebar">
+        <button
+          id="sidebarCloseBtn"
+          class="sidebar-close-btn"
+          aria-label="Close menu">
+          ✕
+        </button>
 
-          <div class="sidebar-brand">
-            <div class="logo-box" id="logoBox" title="Click to change logo">
-              <img id="deptLogo" src="" alt="Logo" class="dept-logo" />
-              <span id="logoPlaceholder" class="logo-placeholder">+</span>
-            </div>
-            <h2 id="deptName" class="dept-name">MaISA</h2>
+        <div class="sidebar-brand">
+          <div class="logo-box" id="logoBox" title="Click to change logo">
+            <img id="deptLogo" src="" alt="Logo" class="dept-logo" />
+            <span id="logoPlaceholder" class="logo-placeholder">+</span>
           </div>
-
-          <!-- hidden file input -->
-          <input
-            type="file"
-            id="logoInput"
-            accept="image/*"
-            style="display: none" />
+          <h2 id="deptName" class="dept-name">MaISA</h2>
         </div>
-        <hr />
+
+        <input
+          type="file"
+          id="logoInput"
+          accept="image/*"
+          style="display: none" />
+
         <ul>
-          <li onclick="window.location.href = 'dashboard.html'">Dashboard</li>
-          <li class="active" onclick="window.location.href = 'set-dues.html'">
-            Set Dues
+          <li class="active" onclick="window.location.href = 'dashboard.html'">
+            Dashboard
           </li>
+          <li onclick="window.location.href = 'set-dues.html'">Set Dues</li>
           <li onclick="window.location.href = 'students.html'">Students</li>
           <li onclick="window.location.href = 'expenses.html'">Expenses</li>
           <li id="logoutBtn">Logout</li>

@@ -232,3 +232,44 @@ async function downloadExcel(url, filenamePrefix) {
     showModalAlert("Failed to export", "error");
   }
 }
+
+// ============ MOBILE SIDEBAR TOGGLE ============
+function initMobileSidebar() {
+  const menuBtn = document.getElementById("mobileMenuBtn");
+  const sidebar = document.getElementById("sidebar");
+  const overlay = document.getElementById("sidebarOverlay");
+  const closeBtn = document.getElementById("sidebarCloseBtn");
+
+  if (!menuBtn || !sidebar || !overlay) return;
+
+  const openSidebar = () => {
+    sidebar.classList.add("open");
+    overlay.classList.add("active");
+    document.body.style.overflow = "hidden";
+  };
+
+  const closeSidebar = () => {
+    sidebar.classList.remove("open");
+    overlay.classList.remove("active");
+    document.body.style.overflow = "";
+  };
+
+  menuBtn.addEventListener("click", openSidebar);
+  overlay.addEventListener("click", closeSidebar);
+  closeBtn?.addEventListener("click", closeSidebar);
+
+  // Auto-close when a nav item is clicked
+  sidebar.querySelectorAll("ul li").forEach((item) => {
+    item.addEventListener("click", () => {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+  // Close if user resizes back to desktop
+  window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) closeSidebar();
+  });
+}
+
+// Auto-init on page load
+document.addEventListener("DOMContentLoaded", initMobileSidebar);

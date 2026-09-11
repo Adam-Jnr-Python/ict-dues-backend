@@ -589,3 +589,223 @@
     word-break: break-word;
   }
 }
+
+/* ============================================================
+   MOBILE RESPONSIVENESS – SIDEBAR SLIDE-IN
+   ============================================================ */
+
+/* Hamburger button – hidden on desktop */
+.mobile-menu-btn {
+  display: none;
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  z-index: 1100;
+  width: 44px;
+  height: 44px;
+  background: #1e293b;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  padding: 10px;
+  flex-direction: column;
+  justify-content: space-around;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  transition: background 0.2s ease;
+}
+
+.mobile-menu-btn:hover {
+  background: #334155;
+}
+
+.mobile-menu-btn span {
+  display: block;
+  width: 100%;
+  height: 3px;
+  background: #f1f5f9;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Sidebar overlay (dark backdrop behind sliding sidebar) */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1050;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.active {
+  display: block;
+  opacity: 1;
+}
+
+/* Close button inside the sidebar – hidden on desktop */
+.sidebar-close-btn {
+  display: none;
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #334155;
+  color: #f1f5f9;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.sidebar-close-btn:hover {
+  background: #ef4444;
+}
+
+/* ===== MOBILE VIEW (≤ 768px) ===== */
+@media (max-width: 768px) {
+  /* Show hamburger */
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  /* Sidebar becomes a sliding drawer */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 260px;
+    max-width: 85vw;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    z-index: 1060;
+    padding-top: 60px; /* space for close button */
+    overflow-y: auto;
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  /* Show the close button inside sidebar */
+  .sidebar-close-btn {
+    display: flex;
+  }
+
+  /* Main content takes full width */
+  .main {
+    width: 100%;
+    padding: 70px 16px 20px 16px; /* top padding so content isn't hidden behind hamburger */
+  }
+
+  /* Header stacks nicely on mobile */
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .header h1,
+  .header h2 {
+    font-size: 1.4rem;
+  }
+
+  /* Cards single-column-ish */
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .card p {
+    font-size: 22px;
+  }
+
+  /* Filter panel (expenses) stacks */
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+  }
+
+  .filter-group select,
+  .filter-group input {
+    min-width: auto;
+    width: 100%;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .filter-actions button {
+    width: 100%;
+  }
+
+  /* Tables scroll horizontally */
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  th,
+  td {
+    padding: 8px 10px;
+  }
+
+  /* Export / action buttons wrap nicely */
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+
+  /* Modals take most of screen */
+  .modal-content {
+    width: 92%;
+    padding: 22px;
+    max-height: 90vh;
+  }
+
+  /* Balance cards (expenses page) become 2 columns */
+  .balance-box {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .balance-item:last-child {
+    grid-column: span 2;
+  }
+}
+
+/* ===== VERY SMALL SCREENS (≤ 420px) ===== */
+@media (max-width: 420px) {
+  .header-actions button {
+    min-width: 100%;
+  }
+
+  .card p {
+    font-size: 20px;
+  }
+
+  .sidebar {
+    width: 240px;
+  }
+
+  .mobile-menu-btn {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+  }
+}
