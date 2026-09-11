@@ -202,14 +202,15 @@ router.get("/paid-students", auth, async (req, res) => {
   }
 });
 
-// PUBLIC STUDENT LOOKUP (for payment portal)
-
+// ============ PUBLIC STUDENT LOOKUP (no auth) ============
 router.get("/public/student/:studentId", async (req, res) => {
   try {
     const { studentId } = req.params;
-    // Case‑insensitive search, trim spaces
+    const trimmedId = studentId.trim();
+
+    // Case-insensitive exact match
     const student = await Student.findOne({
-      studentId: { $regex: `^${studentId.trim()}$`, $options: "i" },
+      studentId: { $regex: `^${trimmedId}$`, $options: "i" },
     });
 
     if (!student) {
@@ -219,7 +220,6 @@ router.get("/public/student/:studentId", async (req, res) => {
     const totalPaid = student.payments.reduce((sum, p) => sum + p.amount, 0);
     const balance = student.totalDues - totalPaid;
 
-    // Return only needed fields (hide sensitive data)
     res.json({
       studentName: student.studentName,
       studentId: student.studentId,
@@ -227,10 +227,10 @@ router.get("/public/student/:studentId", async (req, res) => {
       level: student.level,
       totalDues: student.totalDues,
       amountPaid: totalPaid,
-      balance: balance,
-      // we don't send full payment history for privacy
+      balance,
     });
   } catch (error) {
+    console.error("Public student lookup error:", error);
     res.status(500).json({ error: error.message });
   }
 });

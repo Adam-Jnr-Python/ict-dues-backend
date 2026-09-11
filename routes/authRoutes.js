@@ -91,7 +91,7 @@ router.delete("/logo", auth, async (req, res) => {
   }
 });
 
-// REGISTER ADMIN
+// ============ REGISTER ADMIN ============
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, department } = req.body;
@@ -102,15 +102,42 @@ router.post("/register", async (req, res) => {
       });
     }
 
+    if (password.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters long",
+      });
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
+    const normalizedDept = department.trim().toUpperCase();
+
+    // 1. Check email uniqueness
+    const existingAdmin = await Admin.findOne({ email: normalizedEmail });
+    if (existingAdmin) {
+      return res.status(400).json({
+        message: "Admin with this email already exists",
+      });
+    }
+
+    // 2. Check department uniqueness (NEW)
+    const existingDept = await Admin.findOne({ department: normalizedDept });
+    if (existingDept) {
+      return res.status(400).json({
+        message: `Department "${normalizedDept}" is already registered. Please use a unique department name (e.g., add your school's abbreviation).`,
+      });
+    }
+
+    // Create admin
     const admin = new Admin({
       name,
-      email: email.toLowerCase(),
+      email: normalizedEmail,
       password,
-      department: department.trim().toUpperCase(),
+      department: normalizedDept,
     });
 
     await admin.save();
 
+    // Generate token
     const token = jwt.sign(
       {
         id: admin._id,
@@ -131,7 +158,7 @@ router.post("/register", async (req, res) => {
         name: admin.name,
         email: admin.email,
         department: admin.department,
-        logo: admin.logo, // NEW
+        logo: admin.logo,
         role: admin.role,
       },
     });
