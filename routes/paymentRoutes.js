@@ -18,8 +18,8 @@ router.post("/set-dues", auth, async (req, res) => {
     }
 
     const dues = await Dues.findOneAndUpdate(
-      { department, level, adminId },
-      { department, level, amount, adminId },
+      { department: req.admin.department, level },
+      { department: req.admin.department, level, amount },
       { returnDocument: "after", upsert: true },
     );
 
@@ -33,8 +33,7 @@ router.post("/set-dues", auth, async (req, res) => {
 router.get("/all-dues", auth, async (req, res) => {
   try {
     const adminId = req.admin.id;
-    const allDues = await Dues.find({ adminId }).sort({
-      department: 1,
+    const allDues = await Dues.find({ department: req.admin.department }).sort({
       level: 1,
     });
     res.json({ count: allDues.length, data: allDues });
@@ -118,7 +117,7 @@ router.post("/pay", auth, async (req, res) => {
       const newStudent = new Student({
         studentName,
         studentId,
-        department,
+        department: req.admin.department,
         course: course || "ICT",
         level,
         payments: [{ amount }],
@@ -156,16 +155,21 @@ router.post("/pay", auth, async (req, res) => {
 // GET ALL STUDENTS
 router.get("/paid-students", auth, async (req, res) => {
   try {
-    const { department, studentId } = req.query;
+    const { search } = req.query;
+    const department = req.admin.department; // From JWT
 
-    const adminId = req.admin.id;
+    let filter = { department }; // Only this admin's department
 
-    let filter = { adminId };
-    if (department) filter.department = department;
-    if (studentId) filter.studentId = { $regex: studentId, $options: "i" };
+    if (search) {
+      const searchRegex = { $regex: search, $options: "i" };
+      filter.$or = [
+        { studentName: searchRegex },
+        { studentId: searchRegex },
+        { course: searchRegex },
+      ];
+    }
 
     const paidStudents = await Student.find(filter);
-
     const paidStudentsData = paidStudents.map((student) => {
       const totalDuesPaid = student.payments.reduce(
         (sum, p) => sum + p.amount,
@@ -198,6 +202,39 @@ router.get("/paid-students", auth, async (req, res) => {
   }
 });
 
+// PUBLIC STUDENT LOOKUP (for payment portal)
+
+router.get("/public/student/:studentId", async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    // Case‑insensitive search, trim spaces
+    const student = await Student.findOne({
+      studentId: { $regex: `^${studentId.trim()}$`, $options: "i" },
+    });
+
+    if (!student) {
+      return res.status(404).json({ message: "Student not found" });
+    }
+
+    const totalPaid = student.payments.reduce((sum, p) => sum + p.amount, 0);
+    const balance = student.totalDues - totalPaid;
+
+    // Return only needed fields (hide sensitive data)
+    res.json({
+      studentName: student.studentName,
+      studentId: student.studentId,
+      department: student.department,
+      level: student.level,
+      totalDues: student.totalDues,
+      amountPaid: totalPaid,
+      balance: balance,
+      // we don't send full payment history for privacy
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // GET SINGLE STUDENT
 router.get("/student/:studentId", auth, async (req, res) => {
   try {
@@ -205,7 +242,10 @@ router.get("/student/:studentId", auth, async (req, res) => {
 
     const adminId = req.admin.id;
 
-    const student = await Student.findOne({ studentId, adminId });
+    const student = await Student.findOne({
+      studentId,
+      department: req.admin.department,
+    });
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
@@ -240,7 +280,9 @@ router.get("/stats", auth, async (req, res) => {
   try {
     const adminId = req.admin.id;
 
-    const allStudents = await Student.find({ adminId });
+    const allStudents = await Student.find({
+      department: req.admin.department,
+    });
 
     let totalStudents = allStudents.length;
     let totalCollected = 0;
@@ -270,7 +312,10 @@ router.delete("/student/:studentId", auth, async (req, res) => {
 
     const adminId = req.admin.id;
 
-    const student = await Student.findOneAndDelete({ studentId, adminId });
+    const student = await Student.findOneAndDelete({
+      studentId,
+      department: req.admin.department,
+    });
 
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
@@ -292,7 +337,10 @@ router.put("/payment/:studentId/:paymentIndex", auth, async (req, res) => {
     const { amount, date } = req.body;
     const adminId = req.admin.id;
 
-    const student = await Student.findOne({ studentId, adminId });
+    const student = await Student.findOne({
+      studentId,
+      department: req.admin.department,
+    });
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }
@@ -335,7 +383,10 @@ router.delete("/payment/:studentId/:paymentIndex", auth, async (req, res) => {
     const { studentId, paymentIndex } = req.params;
     const adminId = req.admin.id;
 
-    const student = await Student.findOne({ studentId, adminId });
+    const student = await Student.findOne({
+      studentId,
+      department: req.admin.department,
+    });
     if (!student) {
       return res.status(404).json({ message: "Student not found" });
     }

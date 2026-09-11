@@ -11,11 +11,25 @@
     <div class="container">
       <div class="sidebar">
         <div class="sidebar-head">
-          <h2 class="head-intro">MaISA</h2>
+          <!-- <h2 id="deptName" class="dept-name">MaISA</h2>
           <img
             src="./images/maisa-icon.jpg"
             alt="MaISA logo"
-            class="maisa-logo" />
+            class="maisa-logo" /> -->
+          <div class="sidebar-brand">
+            <div class="logo-box" id="logoBox" title="Click to change logo">
+              <img id="deptLogo" src="" alt="Logo" class="dept-logo" />
+              <span id="logoPlaceholder" class="logo-placeholder">+</span>
+            </div>
+            <h2 id="deptName" class="dept-name">MaISA</h2>
+          </div>
+
+          <!-- hidden file input -->
+          <input
+            type="file"
+            id="logoInput"
+            accept="image/*"
+            style="display: none" />
         </div>
         <hr />
         <ul>
@@ -24,17 +38,43 @@
           <li class="active" onclick="window.location.href = 'students.html'">
             Students
           </li>
+          <li onclick="window.location.href = 'expenses.html'">Expenses</li>
           <li id="logoutBtn">Logout</li>
         </ul>
       </div>
 
       <div class="main">
         <!-- HEADER -->
+        <!-- HEADER -->
         <div class="header">
           <h2>Students</h2>
-          <button id="addStudentBtn" class="btn-primary">+ Add Student</button>
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              align-items: center;
+              flex-wrap: wrap;
+            ">
+            <input
+              type="text"
+              id="searchStudent"
+              placeholder="Search by name, ID, dept..."
+              style="
+                padding: 8px 14px;
+                border: 2px solid #e2e8f0;
+                border-radius: 6px;
+                font-size: 14px;
+                min-width: 220px;
+              " />
+            <button
+              id="exportStudentsBtn"
+              class="btn-primary"
+              style="margin-right: 10px">
+              Export Excel
+            </button>
+            <button id="addStudentBtn" class="btn-primary">Add Student</button>
+          </div>
         </div>
-
         <!-- Students Table -->
         <table>
           <thead>
@@ -163,6 +203,7 @@
       </div>
     </div>
 
+    <script src="./js/utils.js"></script>
     <script src="./js/students.js"></script>
   </body>
 </html>

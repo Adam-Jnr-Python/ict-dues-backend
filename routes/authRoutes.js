@@ -3,28 +3,102 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 const Admin = require("../models/Admin");
 const auth = require("../middleware/auth");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+
+// ============ MULTER SETUP ============
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(__dirname, "../public/uploads/logos");
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const dept = (req.admin?.department || "dept")
+      .toLowerCase()
+      .replace(/\s+/g, "-");
+    cb(null, `${dept}-${Date.now()}${ext}`);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  const allowed = [".png", ".jpg", ".jpeg", ".webp", ".svg"];
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (allowed.includes(ext)) cb(null, true);
+  else
+    cb(new Error("Only image files are allowed (png, jpg, jpeg, webp, svg)"));
+};
+
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB max
+});
+
+// ============ UPLOAD LOGO ============
+router.post("/upload-logo", auth, upload.single("logo"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const admin = await Admin.findById(req.admin.id);
+    if (!admin) {
+      return res.status(404).json({ message: "Admin not found" });
+    }
+
+    // Delete old logo file if it exists and isn't the default
+    if (admin.logo) {
+      const oldPath = path.join(__dirname, "../public", admin.logo);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
+    // Save new logo path
+    const logoPath = `/uploads/logos/${req.file.filename}`;
+    admin.logo = logoPath;
+    await admin.save();
+
+    res.json({
+      message: "Logo uploaded successfully",
+      logo: logoPath,
+    });
+  } catch (error) {
+    console.error("Upload logo error:", error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// ============ DELETE LOGO ============
+router.delete("/logo", auth, async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.admin.id);
+    if (!admin) return res.status(404).json({ message: "Admin not found" });
+
+    if (admin.logo) {
+      const oldPath = path.join(__dirname, "../public", admin.logo);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      admin.logo = "";
+      await admin.save();
+    }
+
+    res.json({ message: "Logo removed" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
 
 // REGISTER ADMIN
 router.post("/register", async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, department } = req.body;
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !department) {
       return res.status(400).json({
-        message: "Please provide name, email, and password",
-      });
-    }
-
-    if (password.length < 6) {
-      return res.status(400).json({
-        message: "Password must be at least 6 characters long",
-      });
-    }
-
-    const existingAdmin = await Admin.findOne({ email: email.toLowerCase() });
-    if (existingAdmin) {
-      return res.status(400).json({
-        message: "Admin with this email already exists",
+        message: "Please provide name, email, password, and department",
       });
     }
 
@@ -32,12 +106,19 @@ router.post("/register", async (req, res) => {
       name,
       email: email.toLowerCase(),
       password,
+      department: department.trim().toUpperCase(),
     });
 
     await admin.save();
 
     const token = jwt.sign(
-      { id: admin._id, email: admin.email, name: admin.name, role: admin.role },
+      {
+        id: admin._id,
+        email: admin.email,
+        name: admin.name,
+        department: admin.department,
+        role: admin.role,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "7d" },
     );
@@ -49,6 +130,8 @@ router.post("/register", async (req, res) => {
         id: admin._id,
         name: admin.name,
         email: admin.email,
+        department: admin.department,
+        logo: admin.logo, // NEW
         role: admin.role,
       },
     });
@@ -87,7 +170,13 @@ router.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: admin._id, email: admin.email, name: admin.name, role: admin.role },
+      {
+        id: admin._id,
+        email: admin.email,
+        name: admin.name,
+        department: admin.department,
+        role: admin.role,
+      },
       process.env.JWT_SECRET,
       { expiresIn: "7d" },
     );
@@ -99,6 +188,8 @@ router.post("/login", async (req, res) => {
         id: admin._id,
         name: admin.name,
         email: admin.email,
+        department: admin.department,
+        logo: admin.logo, // NEW
         role: admin.role,
       },
     });

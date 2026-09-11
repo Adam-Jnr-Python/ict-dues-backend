@@ -21,7 +21,6 @@
 }
 
 .sidebar .sidebar-head {
-  margin-bottom: 10px;
   color: #f1f5f9;
 }
 
@@ -30,6 +29,95 @@
   justify-content: center;
   align-items: center;
   gap: 12px;
+}
+
+/* ===== SIDEBAR BRAND / LOGO ===== */
+.sidebar-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+  gap: 10px;
+}
+
+.logo-box {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: #334155;
+  border: 2px dashed #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.logo-box:hover {
+  border-color: #3b82f6;
+  background: #1e40af33;
+}
+
+.logo-box.has-logo {
+  border-style: solid;
+  border-color: #3b82f6;
+  background: #0f172a;
+}
+
+.dept-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: none;
+  border-radius: 50%;
+}
+
+.logo-box.has-logo .dept-logo {
+  display: block;
+}
+
+.logo-box.has-logo .logo-placeholder {
+  display: none;
+}
+
+.logo-placeholder {
+  font-size: 28px;
+  font-weight: bold;
+  color: #94a3b8;
+  line-height: 1;
+  -webkit-user-select: none;
+}
+
+.sidebar-brand .dept-name {
+  font-size: 1.05rem;
+  color: #f1f5f9;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: center;
+  word-break: break-word;
+  margin: 0;
+}
+
+/* Responsive – hide logo text on very small screens */
+@media (max-width: 480px) {
+  .sidebar-brand .dept-name {
+    font-size: 0.75rem;
+  }
+  .logo-box {
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.sidebar .dept-name {
+  font-size: 1.1rem;
+  color: #f1f5f9;
+  word-break: break-word;
+  line-height: 1.3;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .maisa-logo {
@@ -90,6 +178,49 @@
 .header h1,
 .header h2 {
   color: #0f172a;
+}
+
+/* ===== DASHBOARD HEADER ACTIONS ===== */
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.header-actions .btn-secondary {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: white;
+}
+
+.header-actions .btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header-actions .btn-secondary:active {
+  transform: translateY(0);
+}
+
+/* Export button specific colors */
+.btn-export-students {
+  background: #10b981;
+}
+.btn-export-students:hover {
+  background: #059669;
+}
+
+.btn-export-expenses {
+  background: #f59e0b;
+}
+.btn-export-expenses:hover {
+  background: #d97706;
 }
 
 /* CARDS */
@@ -381,6 +512,31 @@
   width: 90%;
 }
 
+/* ===== RESPONSIVE HEADER ===== */
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .header-actions {
+    flex-wrap: wrap;
+  }
+
+  .header-actions button {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-actions button {
+    min-width: 100%;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .cards {
@@ -417,7 +573,7 @@
   }
 
   .sidebar {
-    width: 60px;
+    width: 150px;
     padding: 10px;
   }
 

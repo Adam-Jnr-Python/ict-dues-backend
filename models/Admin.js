@@ -2,10 +2,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
 const adminSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
+  name: { type: String, required: true },
   email: {
     type: String,
     required: true,
@@ -13,20 +10,11 @@ const adminSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
-  password: {
-    type: String,
-    required: true,
-    minlength: 6,
-  },
-  role: {
-    type: String,
-    enum: ["admin", "superadmin"],
-    default: "admin",
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  password: { type: String, required: true, minlength: 6 },
+  department: { type: String, required: true, trim: true, uppercase: true },
+  logo: { type: String, default: "" }, // NEW
+  role: { type: String, enum: ["admin", "superadmin"], default: "admin" },
+  createdAt: { type: Date, default: Date.now },
 });
 
 // Hash password before saving - WITHOUT using next as parameter

@@ -12,11 +12,26 @@
       <!-- SIDEBAR -->
       <div class="sidebar">
         <div class="sidebar-head">
-          <h2 class="head-intro">MaISA</h2>
+          <!-- <h2 id="deptName" class="dept-name">MaISA</h2>
           <img
             src="./images/maisa-icon.jpg"
             alt="MaISA logo"
-            class="maisa-logo" />
+            class="maisa-logo" /> -->
+
+          <div class="sidebar-brand">
+            <div class="logo-box" id="logoBox" title="Click to change logo">
+              <img id="deptLogo" src="" alt="Logo" class="dept-logo" />
+              <span id="logoPlaceholder" class="logo-placeholder">+</span>
+            </div>
+            <h2 id="deptName" class="dept-name">MaISA</h2>
+          </div>
+
+          <!-- hidden file input -->
+          <input
+            type="file"
+            id="logoInput"
+            accept="image/*"
+            style="display: none" />
         </div>
         <hr />
         <ul>
@@ -25,6 +40,7 @@
             Set Dues
           </li>
           <li onclick="window.location.href = 'students.html'">Students</li>
+          <li onclick="window.location.href = 'expenses.html'">Expenses</li>
           <li id="logoutBtn">Logout</li>
         </ul>
       </div>
@@ -117,6 +133,7 @@
       </div>
     </div>
 
+    <script src="./js/utils.js"></script>
     <script src="./js/set-dues.js"></script>
   </body>
 </html>

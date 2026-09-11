@@ -13,6 +13,11 @@
         <input type="text" name="name" placeholder="Full Name" required />
         <input type="email" name="email" placeholder="Email" required />
         <input
+          type="text"
+          name="department"
+          placeholder="Department (e.g. MaISA, NASS)"
+          required />
+        <input
           type="password"
           name="password"
           placeholder="Password (min 6 chars)"
@@ -22,29 +27,7 @@
       <p>Already have an account? <a href="login.html">Login</a></p>
     </div>
 
-    <script>
-      // Check if there are query parameters
-      const urlParams = new URLSearchParams(window.location.search);
-      const name = urlParams.get("name");
-      const email = urlParams.get("email");
-      const password = urlParams.get("password");
-
-      // If parameters exist, auto-submit the form
-      if (name && email && password) {
-        // Fill the form
-        document.querySelector('input[name="name"]').value = name;
-        document.querySelector('input[name="email"]').value = email;
-        document.querySelector('input[name="password"]').value = password;
-
-        // Auto-submit after a small delay
-        setTimeout(() => {
-          document
-            .getElementById("signupForm")
-            .dispatchEvent(new Event("submit"));
-        }, 500);
-      }
-    </script>
-
+    <script src="./js/utils.js"></script>
     <script src="./js/script.js"></script>
   </body>
 </html>

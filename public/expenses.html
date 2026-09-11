@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expenses</title>
+    <link rel="stylesheet" href="./css/dashboard.css" />
+    <link rel="stylesheet" href="./css/dashboard.css" />
+    <link rel="stylesheet" href="./css/expenses.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- SIDEBAR -->
+      <div class="sidebar">
+        <div class="sidebar-head">
+          <div class="sidebar-brand">
+            <div class="logo-box" id="logoBox" title="Click to change logo">
+              <img id="deptLogo" src="" alt="Logo" class="dept-logo" />
+              <span id="logoPlaceholder" class="logo-placeholder">+</span>
+            </div>
+            <h2 id="deptName" class="dept-name">MaISA</h2>
+          </div>
+
+          <!-- hidden file input -->
+          <!-- <input type="file" id="logoInput" accept="image/*" style="display:none;" />
+          <h2 id="deptName" class="dept-name">MaISA</h2>
+          <img
+            src="./images/maisa-icon.jpg"
+            alt="MaISA logo"
+            class="maisa-logo" /> -->
+        </div>
+        <hr />
+        <ul>
+          <li onclick="window.location.href = 'dashboard.html'">Dashboard</li>
+          <li onclick="window.location.href = 'set-dues.html'">Set Dues</li>
+          <li onclick="window.location.href = 'students.html'">Students</li>
+          <li class="active" onclick="window.location.href = 'expenses.html'">
+            Expenses
+          </li>
+          <li id="logoutBtn">Logout</li>
+        </ul>
+      </div>
+
+      <!-- MAIN CONTENT -->
+      <div class="main">
+        <div class="header">
+          <h2>Expenses & Ledger</h2>
+          <div>
+            <button
+              id="exportExpensesBtn"
+              class="btn-primary"
+              style="margin: 0 10px 10px 0">
+              Export Expenses
+            </button>
+            <button id="addExpenseBtn" class="btn-primary">Add Expense</button>
+          </div>
+        </div>
+
+        <!-- SUMMARY CARDS -->
+        <div class="cards" style="margin-bottom: 20px">
+          <div class="card">
+            <h3>Total Income</h3>
+            <p id="totalIncome">GH¢0</p>
+          </div>
+          <div class="card">
+            <h3>Total Expenses</h3>
+            <p id="totalExpenses">GH¢0</p>
+          </div>
+          <div class="card">
+            <h3>Net Balance</h3>
+            <p id="netBalance" style="color: #10b981">GH¢0</p>
+          </div>
+        </div>
+
+        <!-- FILTERS -->
+        <div class="filters">
+          <div class="filter-group">
+            <label>Category</label>
+            <select id="filterCategory">
+              <option value="">All Categories</option>
+              <option value="Events">Events</option>
+              <option value="Materials">Materials</option>
+              <option value="Equipment">Equipment</option>
+              <option value="Administration">Administration</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label>From Date</label>
+            <input type="date" id="filterStartDate" />
+          </div>
+
+          <div class="filter-group">
+            <label>To Date</label>
+            <input type="date" id="filterEndDate" />
+          </div>
+
+          <div class="filter-actions">
+            <button id="applyFilters" class="btn-primary">Apply</button>
+            <button id="clearFilters" class="btn-secondary">Clear</button>
+          </div>
+        </div>
+        <!-- EXPENSES TABLE -->
+        <table>
+          <thead>
+            <tr>
+              <th>Receipt #</th>
+              <th>Category</th>
+              <th>Description</th>
+              <th>Amount (GH¢)</th>
+              <th>Date</th>
+              <th>Method</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="expensesTable">
+            <tr>
+              <td colspan="7" id="loadingExpenses">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ADD/EDIT EXPENSE MODAL -->
+    <div id="expenseModal" class="modal">
+      <div class="modal-content">
+        <h3 id="modalTitle">Add Expense</h3>
+        <select id="expenseCategory">
+          <option value="">Select Category</option>
+          <option value="Events">Events</option>
+          <option value="Materials">Materials</option>
+          <option value="Equipment">Equipment</option>
+          <option value="Administration">Administration</option>
+          <option value="Other">Other</option>
+        </select>
+        <input
+          type="text"
+          id="expenseDescription"
+          placeholder="Description *" />
+        <input
+          type="number"
+          id="expenseAmount"
+          placeholder="Amount *"
+          min="0"
+          step="100" />
+        <input type="date" id="expenseDate" />
+        <select id="expensePaymentMethod">
+          <option value="Cash">Cash</option>
+          <option value="Bank Transfer">Bank Transfer</option>
+          <option value="Mobile Money">Mobile Money</option>
+          <option value="Other">Other</option>
+        </select>
+        <textarea id="expenseNotes" placeholder="Notes (optional)"></textarea>
+        <div class="modal-actions">
+          <button id="saveExpense" class="btn-primary">Save</button>
+          <button id="closeExpenseModal" class="btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./js/utils.js"></script>
+    <script src="./js/expenses.js"></script>
+  </body>
+</html>

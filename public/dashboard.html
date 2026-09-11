@@ -11,11 +11,24 @@
       <!-- SIDEBAR -->
       <div class="sidebar">
         <div class="sidebar-head">
-          <h2 class="head-intro">MaISA</h2>
-          <img
+          <div class="sidebar-brand">
+            <div class="logo-box" id="logoBox" title="Click to change logo">
+              <img id="deptLogo" src="" alt="Logo" class="dept-logo" />
+              <span id="logoPlaceholder" class="logo-placeholder">+</span>
+            </div>
+            <h2 id="deptName" class="dept-name">MaISA</h2>
+          </div>
+
+          <!-- hidden file input -->
+          <input
+            type="file"
+            id="logoInput"
+            accept="image/*"
+            style="display: none" />
+          <!-- <img
             src="./images/maisa-icon.jpg"
             alt="MaISA logo"
-            class="maisa-logo" />
+            class="maisa-logo" /> -->
         </div>
         <hr />
 
@@ -23,8 +36,9 @@
           <li class="active" onclick="window.location.href = 'dashboard.html'">
             Dashboard
           </li>
-          <li onclick="window.location.href = 'set-dues.html'">Set-Dues</li>
+          <li onclick="window.location.href = 'set-dues.html'">Set Dues</li>
           <li onclick="window.location.href = 'students.html'">Students</li>
+          <li onclick="window.location.href = 'expenses.html'">Expenses</li>
           <li id="logoutBtn">Logout</li>
         </ul>
       </div>
@@ -34,6 +48,31 @@
         <!-- HEADER -->
         <div class="header">
           <h1>Dashboard</h1>
+          <div
+            style="
+              display: flex;
+              gap: 10px;
+              align-items: center;
+              flex-wrap: wrap;
+            ">
+            <button
+              onclick="window.location.href = 'expenses.html'"
+              class="btn-primary"
+              style="margin-left: 10px">
+              Expenses
+            </button>
+
+            <button
+              id="exportStudentsBtn"
+              class="btn-secondary btn-export-students">
+              Export Students
+            </button>
+            <button
+              id="exportExpensesBtn"
+              class="btn-secondary btn-export-expenses">
+              Export Expenses
+            </button>
+          </div>
         </div>
 
         <!-- CARDS -->
@@ -54,10 +93,19 @@
             <h3>Students Owing</h3>
             <p id="owing">0</p>
           </div>
+          <div class="card">
+            <h3>Total Expenses</h3>
+            <p id="totalExpenses">₦0</p>
+          </div>
+          <div class="card">
+            <h3>Net Balance</h3>
+            <p id="netBalance" style="color: #10b981">₦0</p>
+          </div>
         </div>
       </div>
     </div>
 
+    <script src="./js/utils.js"></script>
     <script src="./js/dashboard.js"></script>
   </body>
 </html>

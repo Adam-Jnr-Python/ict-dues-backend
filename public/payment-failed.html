@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Failed</title>
+    <link rel="stylesheet" href="./css/login.css" />
+    <style>
+      .failed-container {
+        background: #1e293b;
+        padding: 50px;
+        border-radius: 12px;
+        max-width: 450px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        color: white;
+      }
+      .failed-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        color: #ef4444;
+      }
+      .failed-container h2 {
+        color: #ef4444;
+        margin-bottom: 10px;
+      }
+      .failed-container p {
+        color: #94a3b8;
+        margin-bottom: 25px;
+        line-height: 1.6;
+      }
+      .failed-container .btn {
+        display: inline-block;
+        padding: 12px 40px;
+        background: #3b82f6;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+      .failed-container .btn:hover {
+        background: #2563eb;
+      }
+      .error-box {
+        background: #0f172a;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 4px solid #ef4444;
+      }
+      .error-box p {
+        margin: 5px 0;
+        color: #cbd5e1;
+      }
+      .error-box .label {
+        color: #94a3b8;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="failed-container">
+      <div class="failed-icon">❌</div>
+      <h2>Payment Failed</h2>
+      <p>
+        We couldn't process your payment. Please try again or contact support.
+      </p>
+
+      <div class="error-box">
+        <p>
+          <span class="label">Error:</span>
+          <span id="errorDisplay">Unknown error</span>
+        </p>
+      </div>
+
+      <div
+        style="
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+          flex-wrap: wrap;
+          margin-top: 10px;
+        ">
+        <a href="payment-portal.html" class="btn">🔄 Try Again</a>
+        <a href="index.html" class="btn" style="background: #64748b">🏠 Home</a>
+      </div>
+    </div>
+
+    <script src="./js/utils.js"></script>
+    <script>
+      // Get error from URL
+      const params = new URLSearchParams(window.location.search);
+      document.getElementById("errorDisplay").textContent =
+        params.get("error") || "Payment could not be processed";
+    </script>
+  </body>
+</html>

@@ -12,6 +12,7 @@ const createAdmin = async () => {
       console.log("✅ Admin already exists!");
       console.log("Email: admin@maisa.com");
       console.log("Password: admin123");
+      console.log(`Department: ${existingAdmin.department}`);
       process.exit(0);
     }
 
@@ -19,6 +20,7 @@ const createAdmin = async () => {
       name: "Super Admin",
       email: "admin@maisa.com",
       password: "admin123",
+      department: "MAISA", // NEW
       role: "superadmin",
     });
 
@@ -26,6 +28,7 @@ const createAdmin = async () => {
     console.log("✅ Admin created successfully!");
     console.log("📧 Email: admin@maisa.com");
     console.log("🔑 Password: admin123");
+    console.log("🏛️  Department: MAISA");
 
     process.exit(0);
   } catch (error) {

@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pay Your Department Dues</title>
+    <link rel="stylesheet" href="./css/student-pay.css" />
+  </head>
+  <body>
+    <div class="pay-container">
+      <!-- Logo / Branding -->
+      <div class="pay-header">
+        <h1>💰 MAISA</h1>
+        <p>Pay Your Department Dues Online</p>
+      </div>
+
+      <!-- === LOOKUP SECTION === -->
+      <div id="lookupSection" class="pay-card">
+        <h2>Check Your Balance</h2>
+        <p class="subtitle">Enter your Student ID to see your dues and pay</p>
+
+        <div class="form-group">
+          <label for="lookupStudentId">Student ID</label>
+          <input type="text" id="lookupStudentId" placeholder="e.g. STU-001" />
+        </div>
+
+        <button id="lookupBtn" class="btn-primary">Check Balance</button>
+
+        <div class="help-text">
+          <small
+            >Don't know your Student ID? Contact the department admin.</small
+          >
+        </div>
+      </div>
+
+      <!-- === STUDENT INFO SECTION (hidden initially) === -->
+      <div id="studentInfo" class="pay-card hidden">
+        <div class="status-badge" id="statusBadge">
+          <span id="statusText">Balance Due</span>
+        </div>
+
+        <div class="student-details">
+          <div class="detail-row">
+            <span class="label">Name</span>
+            <span class="value" id="studentName">-</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Student ID</span>
+            <span class="value" id="studentIdDisplay">-</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Department</span>
+            <span class="value" id="studentDept">-</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Level</span>
+            <span class="value" id="studentLevel">-</span>
+          </div>
+        </div>
+
+        <div class="balance-box">
+          <div class="balance-item">
+            <span class="label">Total Dues</span>
+            <span class="amount" id="totalDues">₦0</span>
+          </div>
+          <div class="balance-item">
+            <span class="label">Amount Paid</span>
+            <span class="amount paid" id="amountPaid">₦0</span>
+          </div>
+          <div class="balance-item highlight">
+            <span class="label">Balance</span>
+            <span class="amount balance" id="balanceDisplay">₦0</span>
+          </div>
+        </div>
+
+        <!-- Payment Form -->
+        <div class="payment-form">
+          <div class="form-group">
+            <label for="paymentAmount">Amount to Pay (₦)</label>
+            <div class="amount-input-group">
+              <input
+                type="number"
+                id="paymentAmount"
+                placeholder="Enter amount"
+                min="100"
+                step="100" />
+              <button id="fullPayBtn" class="btn-full">Pay Full Balance</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="studentEmail">Email Address (for receipt)</label>
+            <input
+              type="email"
+              id="studentEmail"
+              placeholder="your@email.com" />
+          </div>
+
+          <button id="payBtn" class="btn-pay">💳 Pay Now with Paystack</button>
+        </div>
+
+        <button id="backBtn" class="btn-back">← Check Another Student</button>
+      </div>
+
+      <!-- Footer -->
+      <div class="pay-footer">
+        <p>🔒 Secured payments by Paystack</p>
+        <small>For questions, contact your department admin</small>
+      </div>
+    </div>
+
+    <script src="./js/utils.js"></script>
+    <script src="./js/student-pay.js"></script>
+  </body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Successful</title>
+    <link rel="stylesheet" href="./css/login.css" />
+    <style>
+      .success-container {
+        background: #1e293b;
+        padding: 50px;
+        border-radius: 12px;
+        max-width: 450px;
+        text-align: center;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        color: white;
+      }
+      .success-icon {
+        font-size: 80px;
+        margin-bottom: 20px;
+        color: #10b981;
+      }
+      .success-container h2 {
+        color: #10b981;
+        margin-bottom: 10px;
+      }
+      .success-container p {
+        color: #94a3b8;
+        margin-bottom: 25px;
+        line-height: 1.6;
+      }
+      .success-container .btn {
+        display: inline-block;
+        padding: 12px 40px;
+        background: #3b82f6;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: background 0.2s;
+      }
+      .success-container .btn:hover {
+        background: #2563eb;
+      }
+      .ref-box {
+        background: #0f172a;
+        padding: 15px;
+        border-radius: 8px;
+        margin: 15px 0;
+        border-left: 4px solid #10b981;
+      }
+      .ref-box p {
+        margin: 5px 0;
+        color: #cbd5e1;
+      }
+      .ref-box .label {
+        color: #94a3b8;
+        font-size: 13px;
+      }
+      .ref-box .value {
+        color: #f1f5f9;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-container">
+      <div class="success-icon">✅</div>
+      <h2>Payment Successful!</h2>
+      <p>
+        Your dues payment has been recorded successfully. You will receive a
+        confirmation email shortly.
+      </p>
+
+      <div class="ref-box">
+        <p><span class="label">Transaction Reference:</span></p>
+        <p><span class="value" id="referenceDisplay">-</span></p>
+        <p style="margin-top: 10px">
+          <span class="label">Student ID:</span>
+          <span class="value" id="studentIdDisplay">-</span>
+        </p>
+      </div>
+
+      <div
+        style="
+          display: flex;
+          gap: 15px;
+          justify-content: center;
+          flex-wrap: wrap;
+          margin-top: 10px;
+        ">
+        <a href="index.html" class="btn">🏠 Home</a>
+        <a href="payment-portal.html" class="btn" style="background: #64748b"
+          >💰 Pay Another</a
+        >
+      </div>
+    </div>
+
+    <script src="./js/utils.js"></script>
+    <script>
+      // Get reference from URL
+      const params = new URLSearchParams(window.location.search);
+      document.getElementById("referenceDisplay").textContent =
+        params.get("reference") || "N/A";
+      document.getElementById("studentIdDisplay").textContent =
+        params.get("studentId") || "N/A";
+    </script>
+  </body>
+</html>
