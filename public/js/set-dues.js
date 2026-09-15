@@ -61,7 +61,7 @@ document.getElementById("setDuesBtn")?.addEventListener("click", async () => {
 
     if (response.ok) {
       showModalAlert(
-        `✅ Dues set for ${department} (${level}L): ${formatCurrency(amount)}`,
+        `✅ Dues set for ${department} (L${level}): ${formatCurrency(amount)}`,
         "success",
       );
       document.getElementById("department").value = "";
