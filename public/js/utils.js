@@ -6,8 +6,7 @@
 const CONFIG = {
   CURRENCY_SYMBOL: "GH¢",
   CURRENCY_POSITION: "prefix", // "prefix" | "suffix"
-  API_BASE: "http://localhost:5000",
-  //API_BASE: "https://ict-dues-backend.onrender.com",
+  API_BASE: "https://ict-dues-backend.onrender.com",
 };
 
 const API_BASE = CONFIG.API_BASE;
