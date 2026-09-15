@@ -16,7 +16,7 @@ const Dues = require("../models/Dues");
 const Expense = require("../models/Expense");
 const Ledger = require("../models/Ledger");
 
-// ============ CONSOLE COLORS ============
+// CONSOLE COLORS
 const colors = {
   reset: "\x1b[0m",
   bright: "\x1b[1m",
@@ -38,7 +38,7 @@ const log = {
     ),
 };
 
-// ============ PROMPT HELPER ============
+// PROMPT HELPER
 function askQuestion(query) {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -52,7 +52,7 @@ function askQuestion(query) {
   );
 }
 
-// ============ MAIN MIGRATION ============
+// MAIN MIGRATION
 async function migrate() {
   try {
     log.header("🚀 MAISA Dues - Department Migration");
@@ -62,7 +62,7 @@ async function migrate() {
     await mongoose.connect(process.env.MONGO_URI);
     log.success("Connected to MongoDB");
 
-    // ============ ASK FOR DEFAULT DEPARTMENT ============
+    // ASK FOR DEFAULT DEPARTMENT
     console.log("");
     log.warn(
       "This script will add a 'department' field to ALL existing records.",
@@ -96,7 +96,7 @@ async function migrate() {
 
     console.log("");
 
-    // ============ MIGRATE ADMINS ============
+    // MIGRATE ADMINS
     log.header("📋 Migrating Admins");
     const admins = await Admin.find({
       $or: [
@@ -118,7 +118,7 @@ async function migrate() {
       log.info(`Total admins migrated: ${adminCount}`);
     }
 
-    // ============ MIGRATE STUDENTS ============
+    // MIGRATE STUDENTS
     log.header("🎓 Migrating Students");
     const students = await Student.find({
       $or: [
@@ -141,7 +141,7 @@ async function migrate() {
       );
     }
 
-    // ============ MIGRATE DUES ============
+    // MIGRATE DUES
     log.header("💵 Migrating Dues");
     const dues = await Dues.find({
       $or: [
@@ -164,8 +164,8 @@ async function migrate() {
       );
     }
 
-    // ============ MIGRATE EXPENSES ============
-    log.header("💰 Migrating Expenses");
+    // MIGRATE EXPENSES
+    log.header("Migrating Expenses");
     const expenses = await Expense.find({
       $or: [
         { department: { $exists: false } },
@@ -187,7 +187,7 @@ async function migrate() {
       );
     }
 
-    // ============ MIGRATE LEDGER ============
+    // MIGRATE LEDGER
     log.header("📊 Migrating Ledger");
     const ledgers = await Ledger.find({
       $or: [
@@ -210,7 +210,7 @@ async function migrate() {
       );
     }
 
-    // ============ RECALCULATE LEDGER ============
+    // RECALCULATE LEDGER
     log.header("🔄 Recalculating Ledger Balance");
 
     // Clear old global ledgers and recalculate per department
@@ -246,7 +246,7 @@ async function migrate() {
     console.log(`   💸 Total Expenses: ₦${totalExpenses.toLocaleString()}`);
     console.log(`   📊 Balance:       ₦${balance.toLocaleString()}`);
 
-    // ============ SUMMARY ============
+    // SUMMARY
     log.header("✅ Migration Complete!");
     console.log("");
     log.success(
@@ -268,5 +268,4 @@ async function migrate() {
   }
 }
 
-// ============ RUN ============
 migrate();

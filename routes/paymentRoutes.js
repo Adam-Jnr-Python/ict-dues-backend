@@ -3,13 +3,15 @@ const router = express.Router();
 const Student = require("../models/Students");
 const Dues = require("../models/Dues");
 const auth = require("../middleware/auth");
+const expenseRoutes = require("./expenseRoutes");
+const recalculateLedger = expenseRoutes.recalculateLedger;
 
 // SET DUES
 router.post("/set-dues", auth, async (req, res) => {
   try {
-    const { department, level, amount } = req.body;
-
-    const adminId = req.admin.id;
+    const department = (req.body.department || "").trim().toUpperCase();
+    const level = (req.body.level || "").toString().trim();
+    const amount = Number(req.body.amount);
 
     if (!department || !level || !amount) {
       return res.status(400).json({
@@ -18,8 +20,8 @@ router.post("/set-dues", auth, async (req, res) => {
     }
 
     const dues = await Dues.findOneAndUpdate(
-      { department: req.admin.department, level },
-      { department: req.admin.department, level, amount },
+      { department, level },
+      { department, level, amount },
       { returnDocument: "after", upsert: true },
     );
 
@@ -87,59 +89,81 @@ router.delete("/dues/:id", auth, async (req, res) => {
   }
 });
 
-// RECORD PAYMENT
+//  RECORD PAYMENT
 router.post("/pay", auth, async (req, res) => {
   try {
-    const { studentName, studentId, department, course, level, amount } =
-      req.body;
+    // Sanitize inputs
+    const studentName = (req.body.studentName || "").toString().trim();
+    const studentId = (req.body.studentId || "").toString().trim();
+    const department = (req.body.department || "")
+      .toString()
+      .trim()
+      .toUpperCase();
+    const level = (req.body.level || "").toString().trim();
+    const amount = Number(req.body.amount);
 
-    const adminId = req.admin.id;
+    const course = (req.body.course || "").toString().trim() || "ICT";
 
+    // Validate
     if (!studentName || !studentId || !department || !level || !amount) {
       return res.status(400).json({
         message:
           "All fields are required: studentName, studentId, department, level, amount",
       });
     }
+    if (isNaN(amount) || amount <= 0) {
+      console.log("❌ Validation failed: amount invalid");
+      return res
+        .status(400)
+        .json({ message: "Amount must be a positive number" });
+    }
 
-    let existingStudent = await Student.findOne({ studentId, adminId });
+    // Check if student exists
+    let existingStudent = await Student.findOne({ studentId });
 
     if (!existingStudent) {
-      const recordedDues = await Dues.findOne({ department, level, adminId });
+      // Lookup dues
+      const recordedDues = await Dues.findOne({ department, level });
+      console.log("🔍 Dues lookup:", {
+        department,
+        level,
+        found: !!recordedDues,
+      });
 
       if (!recordedDues) {
         return res.status(404).json({
-          message:
-            "Dues not set for this department and level. Please set dues first.",
+          message: `No dues configured for ${department} at Level ${level}. Please go to "Set Dues" and add one first.`,
         });
       }
 
       const newStudent = new Student({
         studentName,
         studentId,
-        department: req.admin.department,
-        course: course || "ICT",
+        department,
+        course,
         level,
+        adminId: req.admin.id,
         payments: [{ amount }],
         totalDues: recordedDues.amount,
-        adminId,
       });
 
       await newStudent.save();
-      res.status(201).json({
+      await recalculateLedger(req.admin.department);
+      return res.status(201).json({
         message: "Payment recorded successfully",
         data: newStudent,
       });
     } else {
+      // Append payment to existing student
       existingStudent.payments.push({ amount });
-
       if (studentName) existingStudent.studentName = studentName;
       if (department) existingStudent.department = department;
       if (course) existingStudent.course = course;
       if (level) existingStudent.level = level;
 
       await existingStudent.save();
-      res.status(200).json({
+      await recalculateLedger(req.admin.department);
+      return res.status(200).json({
         message: "Payment updated successfully",
         data: existingStudent,
       });
@@ -148,6 +172,9 @@ router.post("/pay", auth, async (req, res) => {
     res.status(500).json({
       message: "Error saving payment",
       error: error.message,
+      details: error.errors
+        ? Object.keys(error.errors).map((k) => error.errors[k].message)
+        : null,
     });
   }
 });
@@ -156,15 +183,14 @@ router.post("/pay", auth, async (req, res) => {
 router.get("/paid-students", auth, async (req, res) => {
   try {
     const { search } = req.query;
-    const department = req.admin.department; // From JWT
-
-    let filter = { department }; // Only this admin's department
+    const filter = { adminId: req.admin.id };
 
     if (search) {
       const searchRegex = { $regex: search, $options: "i" };
       filter.$or = [
         { studentName: searchRegex },
         { studentId: searchRegex },
+        { department: searchRegex },
         { course: searchRegex },
       ];
     }
@@ -202,7 +228,7 @@ router.get("/paid-students", auth, async (req, res) => {
   }
 });
 
-// ============ PUBLIC STUDENT LOOKUP (no auth) ============
+//  PUBLIC STUDENT LOOKUP (no auth)
 router.get("/public/student/:studentId", async (req, res) => {
   try {
     const { studentId } = req.params;
@@ -244,7 +270,7 @@ router.get("/student/:studentId", auth, async (req, res) => {
 
     const student = await Student.findOne({
       studentId,
-      department: req.admin.department,
+      adminId: req.admin.id,
     });
 
     if (!student) {
@@ -321,6 +347,8 @@ router.delete("/student/:studentId", auth, async (req, res) => {
       return res.status(404).json({ message: "Student not found" });
     }
 
+    await recalculateLedger(req.admin.department);
+
     res.json({
       message: "Student deleted successfully",
       data: student,
@@ -353,6 +381,7 @@ router.put("/payment/:studentId/:paymentIndex", auth, async (req, res) => {
     if (date) student.payments[paymentIndex].date = new Date(date);
 
     await student.save();
+    await recalculateLedger(req.admin.department);
 
     const totalPaid = student.payments.reduce((sum, p) => sum + p.amount, 0);
 
@@ -397,7 +426,7 @@ router.delete("/payment/:studentId/:paymentIndex", auth, async (req, res) => {
 
     student.payments.splice(paymentIndex, 1);
     await student.save();
-
+    await recalculateLedger(req.admin.department);
     const totalPaid = student.payments.reduce((sum, p) => sum + p.amount, 0);
 
     res.json({

@@ -9,40 +9,49 @@
   </head>
   <body>
     <div class="container">
-      <div <!-- MOBILE HAMBURGER -->
-        <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open menu">
-          <span></span>
-          <span></span>
-          <span></span>
+      <!-- MOBILE HAMBURGER -->
+      <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <!-- SIDEBAR OVERLAY (mobile) -->
+      <div id="sidebarOverlay" class="sidebar-overlay"></div>
+
+      <!-- SIDEBAR -->
+      <div class="sidebar" id="sidebar">
+        <button
+          id="sidebarCloseBtn"
+          class="sidebar-close-btn"
+          aria-label="Close menu">
+          ✕
         </button>
-      
-        <!-- SIDEBAR OVERLAY (mobile) -->
-        <div id="sidebarOverlay" class="sidebar-overlay"></div>
-      
-        <!-- SIDEBAR -->
-        <div class="sidebar" id="sidebar">
-          <button id="sidebarCloseBtn" class="sidebar-close-btn" aria-label="Close menu">✕</button>
-      
-          <div class="sidebar-brand">
-            <div class="logo-box" id="logoBox" title="Click to change logo">
-              <img id="deptLogo" src="" alt="Logo" class="dept-logo" />
-              <span id="logoPlaceholder" class="logo-placeholder">+</span>
-            </div>
-            <h2 id="deptName" class="dept-name">MaISA</h2>
+
+        <div class="sidebar-brand">
+          <div class="logo-box" id="logoBox" title="Click to change logo">
+            <img id="deptLogo" src="" alt="Logo" class="dept-logo" />
+            <span id="logoPlaceholder" class="logo-placeholder">+</span>
           </div>
-      
-          <input type="file" id="logoInput" accept="image/*" style="display:none;" />
-      
-          <ul>
-            <li onclick="window.location.href='dashboard.html'">Dashboard</li>
-            <li onclick="window.location.href='set-dues.html'">Set Dues</li>
-            <li 
-            class="active" onclick="window.location.href='students.html'">Students</li>
-            <li onclick="window.location.href='expenses.html'">Expenses</li>
-            <li id="logoutBtn">Logout</li>
-          </ul>
+          <h2 id="deptName" class="dept-name">MaISA</h2>
         </div>
-      
+
+        <input
+          type="file"
+          id="logoInput"
+          accept="image/*"
+          style="display: none" />
+
+        <ul>
+          <li onclick="window.location.href = 'dashboard.html'">Dashboard</li>
+          <li onclick="window.location.href = 'set-dues.html'">Set Dues</li>
+          <li class="active" onclick="window.location.href = 'students.html'">
+            Students
+          </li>
+          <li onclick="window.location.href = 'expenses.html'">Expenses</li>
+          <li id="logoutBtn">Logout</li>
+        </ul>
+      </div>
 
       <div class="main">
         <!-- HEADER -->
@@ -104,7 +113,11 @@
             <h3>Add Student & Record Payment</h3>
             <input type="text" id="studentName" placeholder="Full Name *" />
             <input type="text" id="studentId" placeholder="Student ID *" />
-            <input type="text" id="department" placeholder="Department *" />
+            <input
+              type="text"
+              id="department"
+              placeholder="Department *"
+              readonly />
             <input type="text" id="level" placeholder="Level *" />
             <input type="text" id="course" placeholder="Course" />
             <input type="number" id="amount" placeholder="Amount Paying *" />

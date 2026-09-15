@@ -1,12 +1,12 @@
 // const API_BASE = "https://ict-dues-backend.onrender.com";
 
-// ============ GLOBALS ============
+// GLOBALS
 let currentStudentId = null;
 let currentPaymentIndex = null;
 let studentToDelete = null;
 let searchTimeout = null;
 
-// ============ LOAD STUDENTS ============
+// LOAD STUDENTS
 async function loadStudents(searchTerm = "") {
   try {
     const params = new URLSearchParams();
@@ -52,7 +52,7 @@ async function loadStudents(searchTerm = "") {
   }
 }
 
-// ============ VIEW STUDENT ============
+// VIEW STUDENT
 async function viewStudent(studentId) {
   try {
     const response = await fetch(`${API_BASE}/api/student/${studentId}`, {
@@ -113,7 +113,7 @@ async function viewStudent(studentId) {
   }
 }
 
-// ============ DELETE STUDENT ============
+// DELETE STUDENT
 function deleteStudent(studentId) {
   studentToDelete = studentId;
   showModalAlert(
@@ -143,7 +143,7 @@ function deleteStudent(studentId) {
   );
 }
 
-// ============ EDIT PAYMENT ============
+// EDIT PAYMENT
 function openEditPayment(studentId, paymentIndex) {
   currentStudentId = studentId;
   currentPaymentIndex = paymentIndex;
@@ -210,7 +210,7 @@ document
     document.getElementById("editPaymentModal").style.display = "none";
   });
 
-// ============ DELETE PAYMENT ============
+// DELETE PAYMENT
 function openDeletePayment(studentId, paymentIndex) {
   currentStudentId = studentId;
   currentPaymentIndex = paymentIndex;
@@ -245,7 +245,7 @@ function openDeletePayment(studentId, paymentIndex) {
   });
 }
 
-// ============ ADD STUDENT ============
+// ADD STUDENT
 document.getElementById("saveStudent")?.addEventListener("click", async () => {
   const studentData = {
     studentName: document.getElementById("studentName")?.value.trim(),
@@ -298,8 +298,14 @@ document.getElementById("saveStudent")?.addEventListener("click", async () => {
   }
 });
 
-// ============ MODAL CONTROLS ============
+// MODAL CONTROLS
 document.getElementById("addStudentBtn")?.addEventListener("click", () => {
+  // Auto-fill department from logged-in admin
+  const user = getCurrentUser();
+  const deptInput = document.getElementById("department");
+  if (deptInput && user.department) {
+    deptInput.value = user.department;
+  }
   document.getElementById("studentModal").style.display = "block";
 });
 
@@ -335,7 +341,7 @@ window.addEventListener("click", (event) => {
   });
 });
 
-// ============ SEARCH (debounced) ============
+// SEARCH (debounced)
 document
   .getElementById("searchStudent")
   ?.addEventListener("input", function () {
@@ -344,12 +350,12 @@ document
     searchTimeout = setTimeout(() => loadStudents(term), 400);
   });
 
-// ============ EXPORT ============
+// EXPORT
 document.getElementById("exportStudentsBtn")?.addEventListener("click", () => {
   downloadExcel(`${API_BASE}/api/export/students`, "students_payments");
 });
 
-// ============ INIT ============
+// INIT
 document.addEventListener("DOMContentLoaded", () => {
   loadStudents();
   setSidebarBranding();

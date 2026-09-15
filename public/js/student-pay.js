@@ -1,6 +1,6 @@
-/* ============================================================
+/*
    PUBLIC STUDENT PAYMENT PORTAL
-   ============================================================ */
+*/
 
 const lookupSection = document.getElementById("lookupSection");
 const studentInfo = document.getElementById("studentInfo");
@@ -13,7 +13,7 @@ const backBtn = document.getElementById("backBtn");
 let currentStudent = null;
 let currentBalance = 0;
 
-// ============ LOOKUP STUDENT ============
+// LOOKUP STUDENT
 lookupBtn?.addEventListener("click", async () => {
   const studentId = lookupStudentId.value.trim();
   if (!studentId)
@@ -70,7 +70,7 @@ lookupBtn?.addEventListener("click", async () => {
       fullPayBtn.disabled = true;
     } else {
       badge.className = "status-badge";
-      statusText.textContent = "💰 Balance Due";
+      statusText.textContent = "Balance Due";
       payBtn.disabled = false;
       fullPayBtn.disabled = false;
     }
@@ -92,14 +92,14 @@ lookupBtn?.addEventListener("click", async () => {
   }
 });
 
-// ============ FULL PAY ============
+// FULL PAY
 fullPayBtn?.addEventListener("click", () => {
   if (currentStudent) {
     document.getElementById("paymentAmount").value = currentStudent.balance;
   }
 });
 
-// ============ BACK ============
+// BACK
 backBtn?.addEventListener("click", () => {
   studentInfo.classList.add("hidden");
   lookupSection.style.display = "block";
@@ -107,7 +107,7 @@ backBtn?.addEventListener("click", () => {
   currentStudent = null;
 });
 
-// ============ PAY ============
+// PAY
 payBtn?.addEventListener("click", async () => {
   const amount = parseFloat(document.getElementById("paymentAmount").value);
   const email = document.getElementById("studentEmail").value.trim();
@@ -144,17 +144,17 @@ payBtn?.addEventListener("click", async () => {
     } else {
       showModalAlert(data.message || "Payment initialization failed", "error");
       payBtn.disabled = false;
-      payBtn.textContent = "💳 Pay Now with Paystack";
+      payBtn.textContent = "Pay Now with Paystack";
     }
   } catch (error) {
     console.error("Payment init error:", error);
     showModalAlert("Failed to initialize payment", "error");
     payBtn.disabled = false;
-    payBtn.textContent = "💳 Pay Now with Paystack";
+    payBtn.textContent = "Pay Now with Paystack";
   }
 });
 
-// ============ ENTER KEY SUPPORT ============
+// ENTER KEY SUPPORT
 lookupStudentId?.addEventListener("keypress", (e) => {
   if (e.key === "Enter") lookupBtn.click();
 });
@@ -167,7 +167,7 @@ document.getElementById("studentEmail")?.addEventListener("keypress", (e) => {
   if (e.key === "Enter") payBtn.click();
 });
 
-// ============ AUTO-LOOKUP FROM URL ============
+// AUTO-LOOKUP FROM URL
 window.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const studentId = params.get("studentId");

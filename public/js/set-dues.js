@@ -1,10 +1,6 @@
-/* ============================================================
-   SET DUES PAGE
-   ============================================================ */
-
 let editId = null;
 
-// ============ LOAD DUES ============
+// LOAD DUES
 async function loadDues() {
   try {
     const response = await fetch(`${API_BASE}/api/all-dues`, {
@@ -43,7 +39,7 @@ async function loadDues() {
   }
 }
 
-// ============ SET NEW DUES ============
+// SET NEW DUES
 document.getElementById("setDuesBtn")?.addEventListener("click", async () => {
   const department = document.getElementById("department").value.trim();
   const level = document.getElementById("level").value.trim();
@@ -83,7 +79,7 @@ document.getElementById("setDuesBtn")?.addEventListener("click", async () => {
   }
 });
 
-// ============ EDIT DUES ============
+// EDIT DUES
 function editDues(id, department, amount) {
   editId = id;
   document.getElementById("editDepartment").value = department;
@@ -120,7 +116,7 @@ document.getElementById("saveEditBtn")?.addEventListener("click", async () => {
   }
 });
 
-// ============ DELETE DUES ============
+// DELETE DUES
 async function deleteDues(id) {
   showModalAlert("Delete these dues?", "info", "Confirm Delete", async () => {
     try {
@@ -146,7 +142,7 @@ async function deleteDues(id) {
   });
 }
 
-// ============ MODAL CONTROLS ============
+// MODAL CONTROLS
 document.getElementById("closeEditModal")?.addEventListener("click", () => {
   document.getElementById("editModal").style.display = "none";
 });
@@ -156,7 +152,7 @@ window.addEventListener("click", (event) => {
   if (event.target === modal) modal.style.display = "none";
 });
 
-// ============ INIT ============
+// INIT
 document.addEventListener("DOMContentLoaded", () => {
   loadDues();
   setSidebarBranding();

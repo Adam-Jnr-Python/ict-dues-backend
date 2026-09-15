@@ -17,7 +17,6 @@ const studentSchema = new mongoose.Schema({
   },
   course: {
     type: String,
-    enum: ["ICT", "Mathematics", "Maths", "IT"],
     required: true,
   },
   level: {

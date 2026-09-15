@@ -9,7 +9,7 @@ const Ledger = require("../models/Ledger");
 const PAYSTACK_SECRET = process.env.PAYSTACK_SECRET_KEY;
 const PAYSTACK_PUBLIC = process.env.PAYSTACK_PUBLIC_KEY;
 
-// ============ INITIALIZE PAYMENT ============
+// INITIALIZE PAYMENT
 router.post("/initialize", async (req, res) => {
   try {
     const { studentId, email, amount } = req.body;
@@ -46,7 +46,7 @@ router.post("/initialize", async (req, res) => {
 
     if (amount > balance) {
       return res.status(400).json({
-        message: `Amount exceeds balance. Your balance is ₦${balance}`,
+        message: `Amount exceeds balance. Your balance is GH¢${balance}`,
       });
     }
 
@@ -55,7 +55,7 @@ router.post("/initialize", async (req, res) => {
       "https://api.paystack.co/transaction/initialize",
       {
         email,
-        amount: amount * 100, // Paystack expects amount in kobo
+        amount: amount * 100, // Paystack expects amount in pesewas
         callback_url: `${process.env.PAYSTACK_CALLBACK_URL}?studentId=${studentId}`,
         metadata: {
           studentId,
@@ -97,7 +97,7 @@ router.post("/initialize", async (req, res) => {
   }
 });
 
-// ============ VERIFY PAYMENT (Callback) ============
+// VERIFY PAYMENT (Callback)
 router.get("/verify", async (req, res) => {
   try {
     const { reference, studentId } = req.query;
@@ -129,7 +129,7 @@ router.get("/verify", async (req, res) => {
 
       // Record the payment
       student.payments.push({
-        amount: data.amount / 100, // Convert back from kobo
+        amount: data.amount / 100, // Convert back from pesewas
         date: new Date(),
         method: "online_paystack",
         transactionId: data.reference,
@@ -167,7 +167,7 @@ router.get("/verify", async (req, res) => {
   }
 });
 
-// ============ WEBHOOK (For real-time updates) ============
+// WEBHOOK (For real-time updates)
 router.post("/webhook", async (req, res) => {
   try {
     // Verify webhook signature
@@ -225,7 +225,7 @@ router.post("/webhook", async (req, res) => {
   }
 });
 
-// ============ GET PAYMENT STATUS ============
+// GET PAYMENT STATUS
 router.get("/status/:reference", async (req, res) => {
   try {
     const { reference } = req.params;
@@ -249,7 +249,7 @@ router.get("/status/:reference", async (req, res) => {
   }
 });
 
-// ============ HELPER: Recalculate Ledger ============
+// HELPER: Recalculate Ledger
 async function recalculateLedger() {
   const incomeAgg = await Student.aggregate([
     { $unwind: "$payments" },

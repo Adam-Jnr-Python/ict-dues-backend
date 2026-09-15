@@ -7,7 +7,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// ============ MULTER SETUP ============
+//  MULTER SETUP
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const dir = path.join(__dirname, "../public/uploads/logos");
@@ -37,7 +37,7 @@ const upload = multer({
   limits: { fileSize: 2 * 1024 * 1024 }, // 2MB max
 });
 
-// ============ UPLOAD LOGO ============
+//  UPLOAD LOGO
 router.post("/upload-logo", auth, upload.single("logo"), async (req, res) => {
   try {
     if (!req.file) {
@@ -72,7 +72,7 @@ router.post("/upload-logo", auth, upload.single("logo"), async (req, res) => {
   }
 });
 
-// ============ DELETE LOGO ============
+//  DELETE LOGO
 router.delete("/logo", auth, async (req, res) => {
   try {
     const admin = await Admin.findById(req.admin.id);
@@ -91,7 +91,7 @@ router.delete("/logo", auth, async (req, res) => {
   }
 });
 
-// ============ REGISTER ADMIN ============
+//  REGISTER ADMIN
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, department } = req.body;
@@ -111,7 +111,7 @@ router.post("/register", async (req, res) => {
     const normalizedEmail = email.toLowerCase().trim();
     const normalizedDept = department.trim().toUpperCase();
 
-    // 1. Check email uniqueness
+    // Check email uniqueness
     const existingAdmin = await Admin.findOne({ email: normalizedEmail });
     if (existingAdmin) {
       return res.status(400).json({
@@ -119,7 +119,7 @@ router.post("/register", async (req, res) => {
       });
     }
 
-    // 2. Check department uniqueness (NEW)
+    // Check department uniqueness
     const existingDept = await Admin.findOne({ department: normalizedDept });
     if (existingDept) {
       return res.status(400).json({

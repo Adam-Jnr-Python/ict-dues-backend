@@ -1,11 +1,9 @@
-/* ============================================================
-   EXPENSES PAGE
-   ============================================================ */
+//   EXPENSES PAGE
 
 let editingExpenseId = null;
 let currentFilters = { category: "", startDate: "", endDate: "" };
 
-// ============ LOAD LEDGER ============
+// LOAD LEDGER
 async function loadLedger() {
   try {
     const res = await fetch(`${API_BASE}/api/ledger`, {
@@ -13,7 +11,6 @@ async function loadLedger() {
     });
     if (res.status === 401) return handleUnauthorized();
     const data = await res.json();
-
     document.getElementById("totalIncome").textContent = formatCurrency(
       data.totalIncome,
     );
@@ -29,7 +26,7 @@ async function loadLedger() {
   }
 }
 
-// ============ LOAD EXPENSES ============
+// LOAD EXPENSES
 async function loadExpenses() {
   try {
     const params = new URLSearchParams();
@@ -79,7 +76,7 @@ async function loadExpenses() {
   }
 }
 
-// ============ ADD EXPENSE ============
+// ADD EXPENSE
 document.getElementById("addExpenseBtn")?.addEventListener("click", () => {
   editingExpenseId = null;
   document.getElementById("modalTitle").textContent = "Add Expense";
@@ -96,7 +93,7 @@ document.getElementById("addExpenseBtn")?.addEventListener("click", () => {
   document.getElementById("expenseModal").style.display = "flex";
 });
 
-// ============ EDIT EXPENSE ============
+// EDIT EXPENSE
 function editExpense(id) {
   editingExpenseId = id;
   fetch(`${API_BASE}/api/expenses/${id}`, { headers: getAuthHeaders() })
@@ -120,7 +117,7 @@ function editExpense(id) {
     });
 }
 
-// ============ SAVE EXPENSE ============
+// SAVE EXPENSE
 document.getElementById("saveExpense")?.addEventListener("click", async () => {
   const payload = {
     category: document.getElementById("expenseCategory").value,
@@ -169,7 +166,7 @@ document.getElementById("saveExpense")?.addEventListener("click", async () => {
   }
 });
 
-// ============ DELETE EXPENSE ============
+// DELETE EXPENSE
 function deleteExpense(id) {
   showModalAlert("Delete this expense?", "info", "Confirm Delete", async () => {
     try {
@@ -194,7 +191,7 @@ function deleteExpense(id) {
   });
 }
 
-// ============ FILTERS ============
+// FILTERS
 document.getElementById("applyFilters")?.addEventListener("click", () => {
   currentFilters.category = document.getElementById("filterCategory").value;
   currentFilters.startDate = document.getElementById("filterStartDate").value;
@@ -210,12 +207,12 @@ document.getElementById("clearFilters")?.addEventListener("click", () => {
   loadExpenses();
 });
 
-// ============ EXPORT ============
+// EXPORT
 document.getElementById("exportExpensesBtn")?.addEventListener("click", () => {
   downloadExcel(`${API_BASE}/api/export/expenses`, "expenses");
 });
 
-// ============ MODAL CLOSE ============
+// MODAL CLOSE
 document.getElementById("closeExpenseModal")?.addEventListener("click", () => {
   document.getElementById("expenseModal").style.display = "none";
 });
@@ -226,7 +223,7 @@ window.addEventListener("click", (e) => {
   }
 });
 
-// ============ INIT ============
+// INIT
 document.addEventListener("DOMContentLoaded", () => {
   loadLedger();
   loadExpenses();

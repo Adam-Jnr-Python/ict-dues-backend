@@ -1,18 +1,18 @@
-/* ============================================================
-   SHARED UTILITIES – used across all pages
+/*   SHARED UTILITIES – used across all pages
    Change CONFIG values here to update the entire app.
-   ============================================================ */
+*/
 
-// ============ GLOBAL CONFIG ============
+//  GLOBAL CONFIG
 const CONFIG = {
   CURRENCY_SYMBOL: "GH¢",
   CURRENCY_POSITION: "prefix", // "prefix" | "suffix"
-  API_BASE: "https://ict-dues-backend.onrender.com",
+  API_BASE: "http://localhost:5000",
+  //API_BASE: "https://ict-dues-backend.onrender.com",
 };
 
 const API_BASE = CONFIG.API_BASE;
 
-// ============ CURRENCY FORMATTER ============
+//  CURRENCY FORMATTER
 function formatCurrency(amount, withDecimals = false) {
   const num = Number(amount) || 0;
   const formatted = withDecimals
@@ -27,7 +27,7 @@ function formatCurrency(amount, withDecimals = false) {
     : `${CONFIG.CURRENCY_SYMBOL}${formatted}`;
 }
 
-// ============ AUTH HELPERS ============
+//  AUTH HELPERS
 function getAuthToken() {
   return localStorage.getItem("token");
 }
@@ -63,7 +63,7 @@ function handleUnauthorized() {
   }, 1500);
 }
 
-// ============ MODAL ALERT SYSTEM ============
+//  MODAL ALERT SYSTEM
 function showModalAlert(message, type = "info", title = "", callback = null) {
   const existing = document.getElementById("customAlertModal");
   if (existing) existing.remove();
@@ -115,7 +115,7 @@ document.addEventListener("click", (e) => {
   if (modal && e.target === modal) closeModalAlert();
 });
 
-// ============ SIDEBAR BRANDING (dept name + logo) ============
+//  SIDEBAR BRANDING (dept name + logo)
 function setSidebarBranding() {
   try {
     const user = getCurrentUser();
@@ -192,7 +192,7 @@ async function uploadLogo(file) {
   }
 }
 
-// ============ GLOBAL LOGOUT ============
+//  GLOBAL LOGOUT
 function attachLogoutHandler() {
   document.getElementById("logoutBtn")?.addEventListener("click", () => {
     showModalAlert(
@@ -211,9 +211,9 @@ function attachLogoutHandler() {
   });
 }
 
-// ============ EXCEL DOWNLOAD HELPER ============
+//  EXCEL DOWNLOAD HELPER
 async function downloadExcel(url, filenamePrefix) {
-  showModalAlert("Exporting... please wait.", "info", "⏳ Processing");
+  showModalAlert("Exporting... please wait.", "info", "Processing...");
   try {
     const res = await fetch(url, { headers: getAuthHeaders() });
     if (res.status === 401) return handleUnauthorized();
@@ -225,7 +225,7 @@ async function downloadExcel(url, filenamePrefix) {
     link.download = `${filenamePrefix}_${new Date().toISOString().split("T")[0]}.xlsx`;
     link.click();
     URL.revokeObjectURL(link.href);
-    showModalAlert("✅ Export downloaded!", "success");
+    showModalAlert("Export downloaded!", "success");
   } catch (err) {
     console.error("Export error:", err);
     closeModalAlert();
@@ -233,7 +233,7 @@ async function downloadExcel(url, filenamePrefix) {
   }
 }
 
-// ============ MOBILE SIDEBAR TOGGLE ============
+//  MOBILE SIDEBAR TOGGLE
 function initMobileSidebar() {
   const menuBtn = document.getElementById("mobileMenuBtn");
   const sidebar = document.getElementById("sidebar");

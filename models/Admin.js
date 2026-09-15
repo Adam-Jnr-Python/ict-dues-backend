@@ -10,9 +10,21 @@ const adminSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
-  password: { type: String, required: true, minlength: 6 },
-  department: { type: String, required: true, trim: true, uppercase: true },
-  logo: { type: String, default: "" }, // NEW
+  password: {
+    type: String,
+    required: true,
+    minlength: 6,
+  },
+  department: {
+    type: String,
+    required: true,
+    trim: true,
+    uppercase: true,
+  },
+  logo: {
+    type: String,
+    default: "",
+  },
   role: { type: String, enum: ["admin", "superadmin"], default: "admin" },
   createdAt: { type: Date, default: Date.now },
 });

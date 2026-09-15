@@ -1,8 +1,4 @@
-/* ============================================================
-   LOGIN / SIGNUP / LANDING
-   ============================================================ */
-
-// ============ LOGIN ============
+// LOGIN
 document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -36,7 +32,7 @@ document.getElementById("loginForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-// ============ SIGNUP ============
+// SIGNUP
 document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -85,7 +81,7 @@ document.getElementById("signupForm")?.addEventListener("submit", async (e) => {
   }
 });
 
-// ============ AUTH GUARD ============
+// AUTH GUARD
 const currentPage = window.location.pathname.split("/").pop();
 const protectedPages = [
   "dashboard.html",

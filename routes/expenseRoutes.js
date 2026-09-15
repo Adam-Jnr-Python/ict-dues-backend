@@ -6,7 +6,7 @@ const Ledger = require("../models/Ledger");
 const auth = require("../middleware/auth");
 const XLSX = require("xlsx");
 
-// ======================== HELPER: Recalculate Ledger ========================
+//  HELPER: Recalculate Ledger
 async function recalculateLedger(department) {
   const incomeAgg = await Student.aggregate([
     { $match: { department } },
@@ -37,7 +37,7 @@ async function recalculateLedger(department) {
   return { totalIncome, totalExpenses, balance };
 }
 
-// ======================== EXPENSE CRUD ========================
+//  EXPENSE CRUD
 // Create expense
 router.post("/expenses", auth, async (req, res) => {
   try {
@@ -60,7 +60,7 @@ router.post("/expenses", auth, async (req, res) => {
       createdBy: req.admin.id,
     });
     await expense.save();
-    await recalculateLedger();
+    await recalculateLedger(req.admin.department);
     res.status(201).json({ message: "Expense added", data: expense });
   } catch (error) {
     console.error("Add expense error:", error);
@@ -86,58 +86,106 @@ router.get("/expenses", auth, async (req, res) => {
   }
 });
 
-// Update expense
+//  GET SINGLE EXPENSE
+router.get("/expenses/:id", auth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const expense = await Expense.findOne({
+      _id: id,
+      department: req.admin.department,
+    });
+
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    res.json(expense);
+  } catch (error) {
+    console.error("Get expense error:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+//  UPDATE EXPENSE
 router.put("/expenses/:id", auth, async (req, res) => {
   try {
     const { id } = req.params;
-    const updates = req.body;
-    const expense = await Expense.findByIdAndUpdate(
-      id,
-      { department: req.admin.department },
-      updates,
+    const { category, description, amount, date, paymentMethod, notes } =
+      req.body;
+
+    if (!category || !description || !amount) {
+      return res.status(400).json({
+        message: "Category, description, and amount are required",
+      });
+    }
+
+    const expense = await Expense.findOneAndUpdate(
+      { _id: id, department: req.admin.department },
       {
-        new: true,
+        category,
+        description,
+        amount: Number(amount),
+        date: date || Date.now(),
+        paymentMethod: paymentMethod || "Cash",
+        notes: notes || "",
       },
+      { new: true, runValidators: true },
     );
-    if (!expense) return res.status(404).json({ message: "Expense not found" });
-    await recalculateLedger();
-    res.json({ message: "Expense updated", data: expense });
+
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    await recalculateLedger(req.admin.department);
+    res.json({ message: "Expense updated successfully", data: expense });
   } catch (error) {
+    console.error("Update expense error:", error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Delete expense
+//  DELETE EXPENSE
 router.delete("/expenses/:id", auth, async (req, res) => {
   try {
     const { id } = req.params;
-    const expense = await Expense.findByIdAndDelete({
-      id,
+
+    const expense = await Expense.findOneAndDelete({
+      _id: id,
       department: req.admin.department,
     });
-    if (!expense) return res.status(404).json({ message: "Expense not found" });
-    await recalculateLedger();
-    res.json({ message: "Expense deleted", data: expense });
+
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    await recalculateLedger(req.admin.department);
+    res.json({ message: "Expense deleted successfully", data: expense });
   } catch (error) {
+    console.error("Delete expense error:", error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// ======================== LEDGER ========================
+//  LEDGER SUMMARY (always recalculates)
+
 router.get("/ledger", auth, async (req, res) => {
   try {
-    let ledger = await Ledger.findOne({ department: req.admin.department });
-    if (!ledger) {
-      await recalculateLedger(req.admin.department);
-      ledger = await Ledger.findOne({ department: req.admin.department });
-    }
-    res.json(ledger);
+    const department = req.admin.department;
+    const fresh = await recalculateLedger(department);
+    res.json({
+      department,
+      totalIncome: fresh.totalIncome,
+      totalExpenses: fresh.totalExpenses,
+      balance: fresh.balance,
+      lastUpdated: new Date(),
+    });
   } catch (error) {
+    console.error("Ledger error:", error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// ======================== EXCEL EXPORT ========================
+//  EXCEL EXPORT
 // Export expenses to Excel
 router.get("/export/expenses", auth, async (req, res) => {
   try {
@@ -148,7 +196,7 @@ router.get("/export/expenses", auth, async (req, res) => {
       "Receipt #": e.receiptNumber,
       Category: e.category,
       Description: e.description,
-      "Amount (₦)": e.amount,
+      "Amount (GH¢)": e.amount,
       Date: e.date.toISOString().split("T")[0],
       "Payment Method": e.paymentMethod,
       Notes: e.notes || "",
@@ -183,9 +231,9 @@ router.get("/export/students", auth, async (req, res) => {
         Department: s.department,
         Course: s.course,
         Level: s.level,
-        "Total Dues (₦)": s.totalDues,
-        "Amount Paid (₦)": paid,
-        "Balance (₦)": s.totalDues - paid,
+        "Total Dues (GH¢)": s.totalDues,
+        "Amount Paid (GH¢)": paid,
+        "Balance (GH¢)": s.totalDues - paid,
         "Payment Count": s.payments.length,
         "Last Payment Date":
           s.payments.length > 0
@@ -217,3 +265,4 @@ router.get("/export/students", auth, async (req, res) => {
 });
 
 module.exports = router;
+module.exports.recalculateLedger = recalculateLedger;

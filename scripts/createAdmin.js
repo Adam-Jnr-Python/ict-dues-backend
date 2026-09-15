@@ -20,7 +20,7 @@ const createAdmin = async () => {
       name: "Super Admin",
       email: "admin@maisa.com",
       password: "admin123",
-      department: "MAISA", // NEW
+      department: "MAISA",
       role: "superadmin",
     });
 

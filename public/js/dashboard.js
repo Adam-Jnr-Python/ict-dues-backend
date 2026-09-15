@@ -1,8 +1,4 @@
-/* ============================================================
-   DASHBOARD PAGE
-   ============================================================ */
-
-// ============ LOAD DASHBOARD STATS ============
+// LOAD DASHBOARD STATS
 async function loadDashboardStats() {
   try {
     const response = await fetch(`${API_BASE}/api/stats`, {
@@ -10,6 +6,7 @@ async function loadDashboardStats() {
     });
     if (response.status === 401) return handleUnauthorized();
     const data = await response.json();
+    console.log(data);
 
     document.getElementById("totalStudents").textContent =
       data.totalStudents || 0;
@@ -24,7 +21,7 @@ async function loadDashboardStats() {
   }
 }
 
-// ============ LOAD LEDGER ============
+// LOAD LEDGER
 async function loadLedger() {
   try {
     const res = await fetch(`${API_BASE}/api/ledger`, {
@@ -45,7 +42,7 @@ async function loadLedger() {
   }
 }
 
-// ============ EXPORTS ============
+// EXPORTS
 document.getElementById("exportStudentsBtn")?.addEventListener("click", () => {
   downloadExcel(`${API_BASE}/api/export/students`, "students_payments");
 });
@@ -54,7 +51,7 @@ document.getElementById("exportExpensesBtn")?.addEventListener("click", () => {
   downloadExcel(`${API_BASE}/api/export/expenses`, "expenses");
 });
 
-// ============ INIT ============
+// INIT
 document.addEventListener("DOMContentLoaded", () => {
   loadDashboardStats();
   loadLedger();
